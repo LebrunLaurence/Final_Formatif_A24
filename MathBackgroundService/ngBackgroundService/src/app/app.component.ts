@@ -57,7 +57,7 @@ export class AppComponent {
 
   currentQuestion: MathQuestion | null = null;
 
-  constructor(public account: AccountService, private zone: NgZone) {}
+  constructor(public account: AccountService, private zone: NgZone) { }
 
   selectChoice(choice: number) {
     this.selection = choice;
@@ -123,6 +123,16 @@ export class AppComponent {
       });
     });
 
+    this.hubConnection.on('EvaluateChoices', (isRight: boolean, answer: number) => {
+      this.zone.run(() => {
+        if (isRight) {
+          alert("Bonne réponse ! ");
+        } else {
+          alert("Mauvaise réponse ! La bonne réponse était " + answer);
+        }
+      })
+    })
+
     this.hubConnection
       .start()
       .then(() => {
@@ -130,4 +140,5 @@ export class AppComponent {
       })
       .catch((err) => console.log('Error while starting connection: ' + err));
   }
+
 }
